@@ -4,6 +4,7 @@ import networkx as nx
 import random
 import json
 import heapq
+import math
 
 
 app = Flask(__name__)
@@ -83,7 +84,7 @@ RandG = None
 @app.route('/get_rand_graph', methods=['GET'])
 def get_rand_graph():
     global RandG
-    RandG = generate_random_graph(100)
+    RandG = generate_random_graph(150)
     # Prepare the graph data in the specified format (without "type")
     RandData = {
     "directed": False,
@@ -194,6 +195,12 @@ def find_shortest_path():
     list(RandG.edges)
     return jsonify({'shortest_path': path})
 
+# Function to calculate Euclidean distance between two nodes
+def euclidean_distance(graph, node1, node2):
+    x1, y1 = graph.nodes[node1]['pos']
+    x2, y2 = graph.nodes[node2]['pos']
+    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+
 
 #Custom A* Algorithm
 def a_star(graph, start_node, target_node):
@@ -269,7 +276,7 @@ def a_starW(graph, start_node, target_node):
                 # This path to the neighbor is better, so record it
                 predecessors[neighbor] = current_node
                 g_costs[neighbor] = tentative_g_cost
-                # Calculate the heuristic (in this case, we use Euclidean distance as the heuristic)
+                # Calculate the heuristic
                 h = nx.shortest_path_length(graph, neighbor, target_node, weight='weight')
                 # Add the neighbor to the open list with the total estimated cost
                 f = tentative_g_cost + h
