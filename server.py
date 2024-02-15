@@ -32,6 +32,10 @@ RandG = None
 
 
 
+# Route for the root URL
+@app.route('/')
+def welcome():
+    return 'Welcome to My Flask App!'
 
 
 @app.route('/get_rand_graph', methods=['GET'])
